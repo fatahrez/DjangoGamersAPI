@@ -47,17 +47,17 @@ class User(AbstractUser, CommonFieldsMixin):
 
 class GamerManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.BRAND)
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.GAMER)
 
 
 class DeveloperManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.BUYER)
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.DEVELOPER)
 
 
 class PublisherManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.COURIER)
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.PUBLISHER)
 
 
 class StaffManager(models.Manager):
@@ -69,7 +69,7 @@ class StaffManager(models.Manager):
 
 
 class Gamer(User):
-    """Class to create Brand Object & Associated attributes """
+    """Class to create Gamer Object & Associated attributes """
     base_type = User.Types.GAMER
     objects = GamerManager()
 
@@ -85,7 +85,7 @@ class Gamer(User):
 
 
 class Developer(User):
-    """ class to create buyer object & associated attributes """
+    """ class to create Developer object & associated attributes """
     base_type = User.Types.DEVELOPER
     objects = DeveloperManager()
 
@@ -101,7 +101,7 @@ class Developer(User):
 
 
 class Publisher(User):
-    """ Class to create courier object & associated attributes """
+    """ Class to create Publisher object & associated attributes """
     base_type = User.Types.PUBLISHER
     objects = PublisherManager()
 
@@ -111,6 +111,9 @@ class Publisher(User):
             self.set_password(self.password)
         return super().save(*args, **kwargs)
 
+    class Meta:
+        proxy = True
+        ordering = ['-created_at', '-updated_at']
 
 class StaffMember(User):
     """ Class to create StaffMember object & associated attributes """
@@ -122,6 +125,10 @@ class StaffMember(User):
             self.type = User.Types.STAFFMEMBER
             self.set_password(self.password)
         return super().save(*args, **kwargs)
+
+    class Meta:
+        proxy = True
+        ordering = ['-created_at', '-updated_at']
 
 
 @receiver(post_save, sender=Publisher)
